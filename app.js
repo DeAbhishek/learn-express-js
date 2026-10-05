@@ -2,8 +2,9 @@ const path = require("path");
 const express = require("express");
 const rootDir = require("./util/path");
 
-const mongoConnect = require("./util/database");
+const mongoConnect = require("./util/database").mongoConnect;
 const errorController = require("./controllers/error");
+const adminRoutes = require("./routes/admin");
 
 const app = express();
 
@@ -15,9 +16,10 @@ app.use(express.static(path.join(rootDir, "public")));
 
 app.use((req, res, next) => {});
 
+app.use("/admin", adminRoutes);
+
 app.use(errorController.get404);
 
-mongoConnect((client) => {
-  console.log(client);
-  app.listen(5000, () => console.log("Server is listening on port 5000..."));
-});
+mongoConnect(() =>
+  app.listen(5000, () => console.log("Server is listening on port 5000..."))
+);
