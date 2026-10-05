@@ -14,7 +14,9 @@ app.set("views", "views");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, "public")));
 
-app.use((req, res, next) => {});
+app.use((req, res, next) => {
+  next();
+});
 
 app.use("/admin", adminRoutes);
 
