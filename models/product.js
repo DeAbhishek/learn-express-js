@@ -7,11 +7,12 @@ class Product {
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
-    this._id = new mongodb.ObjectId(id);
+    this._id = id ? new mongodb.ObjectId(id) : null;
   }
   save() {
     const db = getDb();
     let dbOp;
+    console.log(this._id);
     if (this._id)
       dbOp = db.collection("products").updateOne(
         { _id: this._id },
@@ -50,6 +51,15 @@ class Product {
         console.log(product);
         return product;
       })
+      .catch((err) => console.log(err));
+  }
+
+  static deleteById(prodId) {
+    const db = getDb();
+    return db
+      .collection("products")
+      .deleteOne({ _id: new mongodb.ObjectId(prodId) })
+      .then((deletedProduct) => console.log(deletedProduct))
       .catch((err) => console.log(err));
   }
 }
