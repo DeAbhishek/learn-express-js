@@ -14,7 +14,14 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  const product = new Product(title, imageUrl, description, price, null);
+  const product = new Product(
+    title,
+    imageUrl,
+    description,
+    price,
+    null,
+    req.user._id
+  );
 
   product
     .save()
@@ -53,7 +60,8 @@ exports.postEditProduct = async (req, res, next) => {
     imageUrl,
     description,
     price,
-    prodId
+    prodId,
+    req.user._id
   );
 
   updatedProduct
@@ -63,7 +71,7 @@ exports.postEditProduct = async (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.fetchAll(req.user._id)
     .then((products) =>
       res.render("admin/products", {
         prods: products,

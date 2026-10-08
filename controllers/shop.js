@@ -1,7 +1,7 @@
 const Product = require("../models/product");
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.fetchAll(req.user._id)
     .then((products) => {
       res.render("shop/product-list", {
         prods: products,
@@ -25,7 +25,7 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, index) => {
-  Product.fetchAll()
+  Product.fetchAll(req.user._id)
     .then((products) => {
       res.render("shop/index", {
         prods: products,
@@ -105,17 +105,17 @@ exports.postOrder = (req, res, next) => {
     .getCart()
     .then((cart) => {
       fetchedCart = cart;
-      return cart.getProducts()
+      return cart.getProducts();
     })
     .then((products) =>
-      req.user
-        .createOrder()
-        .then((order) =>
-          order.addProducts(
-            products.map(product => {
-              product.orderItem = { quantity: product.cartItem.quantity };
-              return product;
-            })))
+      req.user.createOrder().then((order) =>
+        order.addProducts(
+          products.map((product) => {
+            product.orderItem = { quantity: product.cartItem.quantity };
+            return product;
+          })
+        )
+      )
     )
     .then(() => fetchedCart.setProducts(null))
     .then(() => res.redirect("/orders"))
@@ -123,11 +123,14 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user.getOrders({ include: ['products'] })
+  req.user
+    .getOrders({ include: ["products"] })
     .then((orders) =>
       res.render("shop/orders", {
         path: "/orders",
         pageTitle: "Your Orders",
-        orders
-      })).catch((err) => console.log(err));
+        orders,
+      })
+    )
+    .catch((err) => console.log(err));
 };

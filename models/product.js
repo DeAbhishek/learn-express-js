@@ -2,12 +2,13 @@ const mongodb = require("mongodb");
 const { getDb } = require("../util/database");
 
 class Product {
-  constructor(title, imageUrl, description, price, id) {
+  constructor(title, imageUrl, description, price, id, userId) {
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
     this._id = id ? new mongodb.ObjectId(id) : null;
+    this.userId = userId ? new mongodb.ObjectId(userId) : null;
   }
   save() {
     const db = getDb();
@@ -27,11 +28,11 @@ class Product {
       .catch((err) => console.log(err));
   }
 
-  static fetchAll() {
+  static fetchAll(userId) {
     const db = getDb();
     return db
       .collection("products")
-      .find()
+      .find({ userId: new mongodb.ObjectId(userId) })
       .toArray()
       .then((products) => {
         console.log(products);
