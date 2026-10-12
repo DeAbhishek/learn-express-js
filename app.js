@@ -17,13 +17,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, "public")));
 
 app.use((req, res, next) => {
-  User.findById("6ac77e8bff77779fdd340180")
+  User.findById("6accae8d8f809abec3fccef3")
     .then((user) => {
       if (user) {
-        req.user = user;
+        req.user = new User(user.name, user.email, user.cart, user._id);
         next();
       } else {
-        const user = new User("Abhi", "deabhishek@gmail.com", null);
+        const user = new User("Abhi", "deabhishek@gmail.com", null, null);
         user.save().then((user) => {
           req.user = user;
           next();
