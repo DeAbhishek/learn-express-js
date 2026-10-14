@@ -18,7 +18,7 @@ class User {
         .updateOne({ _id: this._id }, { $set: this });
     else dbOp = db.collection("users").insertOne(this);
     return dbOp
-      .then((result) => console.log("result"))
+      .then((result) => console.log(result))
       .catch((err) => console.log(err));
   }
 
@@ -45,6 +45,40 @@ class User {
         { $set: { cart: { items: updatedCartItems } } }
       )
       .then((product) => product)
+      .catch((err) => console.log(err));
+  };
+
+  getCart = () => {
+    const productIds = this.cart.items.map((i) => i.productId);
+    const db = getDb();
+    return db
+      .collection("products")
+      .find({ _id: { $in: productIds } }) // find all products whose _id is in the productIds array
+      .toArray()
+      .then((products) =>
+        products.map((p) => {
+          return {
+            ...p,
+            quantity: this.cart.items.find(
+              (i) => i.productId.toString() === p._id.toString()
+            ).quantity,
+          };
+        })
+      );
+  };
+
+  deleteItemFromCart = (prodId) => {
+    const updatedCartItems = this.cart.items.filter(
+      (item) => item.productId.toString() !== prodId.toString()
+    );
+    const db = getDb();
+    return db
+      .collection("users")
+      .updateOne(
+        { _id: this._id },
+        { $set: { cart: { items: updatedCartItems } } }
+      )
+      .then((products) => products)
       .catch((err) => console.log(err));
   };
 
