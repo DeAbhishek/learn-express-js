@@ -1,5 +1,6 @@
 const mongodb = require("mongodb");
 const { getDb } = require("../util/database");
+const { or } = require("sequelize");
 
 class User {
   constructor(userName, email, cart, id) {
@@ -79,6 +80,35 @@ class User {
         { $set: { cart: { items: updatedCartItems } } }
       )
       .then((products) => products)
+      .catch((err) => console.log(err));
+  };
+
+  addOrder = () => {
+    const db = getDb();
+    return this.getCart()
+      .then((products) =>
+        db.collection("orders").insertOne({
+          products,
+          user: {
+            _id: this._id,
+            name: this.name,
+          },
+        })
+      )
+      .then(() => {
+        this.cart = { items: [] };
+        return db
+          .collection("users")
+          .updateOne({ _id: this._id }, { $set: { cart: { items: [] } } });
+      });
+  };
+
+  getOrders = () => {
+    const db = getDb();
+    return db
+      .collection("orders")
+      .find({ 'user._id': this._id })
+      .toArray()
       .catch((err) => console.log(err));
   };
 
