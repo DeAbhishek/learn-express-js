@@ -2,7 +2,8 @@ const path = require("path");
 const express = require("express");
 const rootDir = require("./util/path");
 
-const mongoConnect = require("./util/database").mongoConnect;
+const mongoose = require("mongoose");
+// const mongoConnect = require("./util/database").mongoConnect;
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 const adminRoutes = require("./routes/admin");
@@ -38,6 +39,15 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect(() =>
-  app.listen(5000, () => console.log("Server is listening on port 5000..."))
-);
+// mongoConnect(() =>
+//   app.listen(5000, () => console.log("Server is listening on port 5000..."))
+// );
+
+mongoose
+  .connect(
+    "mongodb+srv://abhi:KbAWt5vIWX1ZgDrP@cluster0.wnmuojk.mongodb.net/shop?appName=Cluster0"
+  )
+  .then(() =>
+    app.listen(5000, () => console.log("Server is listening on port 5000..."))
+  )
+  .catch((err) => console.log(err));
