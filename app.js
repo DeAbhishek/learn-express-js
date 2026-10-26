@@ -1,3 +1,8 @@
+const dns = require("node:dns");
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
+
+
 const path = require("path");
 const express = require("express");
 const rootDir = require("./util/path");
@@ -5,7 +10,7 @@ const rootDir = require("./util/path");
 const mongoose = require("mongoose");
 // const mongoConnect = require("./util/database").mongoConnect;
 const errorController = require("./controllers/error");
-const User = require("./models/user");
+// const User = require("./models/user");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
@@ -17,22 +22,22 @@ app.set("views", "views");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, "public")));
 
-app.use((req, res, next) => {
-  User.findById("6accae8d8f809abec3fccef3")
-    .then((user) => {
-      if (user) {
-        req.user = new User(user.name, user.email, user.cart, user._id);
-        next();
-      } else {
-        const user = new User("Abhi", "deabhishek@gmail.com", null, null);
-        user.save().then((user) => {
-          req.user = user;
-          next();
-        });
-      }
-    })
-    .catch((err) => console.log(err));
-});
+// app.use((req, res, next) => {
+//   User.findById("6accae8d8f809abec3fccef3")
+//     .then((user) => {
+//       if (user) {
+//         req.user = new User(user.name, user.email, user.cart, user._id);
+//         next();
+//       } else {
+//         const user = new User("Abhi", "deabhishek@gmail.com", null, null);
+//         user.save().then((user) => {
+//           req.user = user;
+//           next();
+//         });
+//       }
+//     })
+//     .catch((err) => console.log(err));
+// });
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
