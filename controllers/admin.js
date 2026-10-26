@@ -56,9 +56,13 @@ exports.postEditProduct = async (req, res, next) => {
       product.description = description;
       return product.save();
     })
-
     .then(() => res.redirect("/admin/products"))
     .catch((err) => console.log(err));
+
+  //diffrent way to update product
+  // Product.findByIdAndUpdate(prodId, { title, imageUrl, price, description })
+  // .then(() => res.redirect("/admin/products"))
+  // .catch((err) => console.log(err));
 };
 
 exports.getProducts = (req, res, next) => {
@@ -75,7 +79,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId)
+  Product.findByIdAndDelete(prodId)
     .then(() => res.redirect("/admin/products"))
     .catch((err) => console.log(err));
 };
