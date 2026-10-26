@@ -64,7 +64,7 @@ exports.postEditProduct = async (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll(req.user._id)
+  Product.find()
     .then((products) =>
       res.render("admin/products", {
         prods: products,
