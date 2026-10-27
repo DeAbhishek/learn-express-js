@@ -11,6 +11,7 @@ const errorController = require("./controllers/error");
 const User = require("./models/user");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
+app.use(authRoutes);
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
