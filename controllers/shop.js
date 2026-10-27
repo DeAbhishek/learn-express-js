@@ -37,14 +37,14 @@ exports.getIndex = (req, res, index) => {
 
 exports.getCart = (req, res, next) => {
   req.user
-    .getCart()
-    .then((products) =>
+    .populate("cart.items.productId")
+    .then((user) => {
       res.render("shop/cart", {
         path: "/cart",
         pageTitle: "Your Cart",
-        products,
-      })
-    )
+        products: user.cart.items,
+      });
+    })
     .catch((err) => console.log(err));
 };
 
@@ -76,7 +76,7 @@ exports.postOrder = (req, res, next) => {
 exports.getOrders = (req, res, next) => {
   req.user
     .getOrders()
-    .then((orders) => 
+    .then((orders) =>
       res.render("shop/orders", {
         path: "/orders",
         pageTitle: "Your Orders",
