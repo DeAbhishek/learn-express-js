@@ -4,6 +4,7 @@ dns.setServers(["8.8.8.8", "1.1.1.1"]);
 const path = require("path");
 const express = require("express");
 const rootDir = require("./util/path");
+const session = require("express-session");
 
 const mongoose = require("mongoose");
 // const mongoConnect = require("./util/database").mongoConnect;
@@ -20,6 +21,7 @@ app.set("views", "views");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, "public")));
+app.use(session({secret:"My secret", resave:false, saveUninitialized:false}));
 
 app.use((req, res, next) => {
   User.findById("6adf939bae8b4a2e101a751f")
